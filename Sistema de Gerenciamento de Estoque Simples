@@ -1,0 +1,42 @@
+# inventory_management.py
+import sqlite3
+
+conn = sqlite3.connect('inventory.db')
+cursor = conn.cursor()
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS inventory 
+                  (id INTEGER PRIMARY KEY, name TEXT, quantity INTEGER)''')
+conn.commit()
+
+def add_item(name, quantity):
+    cursor.execute("INSERT INTO inventory (name, quantity) VALUES (?, ?)", (name, quantity))
+    conn.commit()
+    print("Item added!")
+
+def remove_item(item_id):
+    cursor.execute("DELETE FROM inventory WHERE id = ?", (item_id,))
+    conn.commit()
+    print("Item removed!")
+
+def show_inventory():
+    cursor.execute("SELECT * FROM inventory")
+    for row in cursor.fetchall():
+        print(row)
+
+# Interface do Usuário
+print("Inventory Management System")
+while True:
+    action = input("Choose action: [add, remove, show, quit]: ").lower()
+    if action == "add":
+        name = input("Item name: ")
+        quantity = int(input("Quantity: "))
+        add_item(name, quantity)
+    elif action == "remove":
+        item_id = int(input("Item ID to remove: "))
+        remove_item(item_id)
+    elif action == "show":
+        show_inventory()
+    elif action == "quit":
+        break
+
+conn.close()
