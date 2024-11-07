@@ -1,0 +1,55 @@
+# quiz_game.py
+import tkinter as tk
+import sqlite3
+import random
+
+# Conexão com o banco de dados SQLite
+conn = sqlite3.connect('questions.db')
+cursor = conn.cursor()
+cursor.execute('''CREATE TABLE IF NOT EXISTS questions
+               (question TEXT, answer TEXT)''')
+conn.commit()
+
+# Perguntas de exemplo
+sample_questions = [
+    ("What is the capital of France?", "Paris"),
+    ("What is 2 + 2?", "4"),
+    ("What is the color of the sky?", "Blue")
+]
+cursor.executemany("INSERT INTO questions VALUES (?, ?)", sample_questions)
+conn.commit()
+
+# Função para perguntar
+def ask_question():
+    question = random.choice(cursor.execute("SELECT * FROM questions").fetchall())
+    question_label.config(text=question[0])
+    answer_entry.delete(0, tk.END)
+    answer_entry.config(state=tk.NORMAL)
+    return question[1]
+
+def check_answer():
+    user_answer = answer_entry.get().strip()
+    if user_answer.lower() == current_answer.lower():
+        result_label.config(text="Correct!")
+    else:
+        result_label.config(text="Try Again")
+
+# Interface Tkinter
+app = tk.Tk()
+app.title("Quiz Game")
+
+question_label = tk.Label(app, text="")
+question_label.pack()
+
+answer_entry = tk.Entry(app)
+answer_entry.pack()
+
+submit_button = tk.Button(app, text="Submit", command=check_answer)
+submit_button.pack()
+
+result_label = tk.Label(app, text="")
+result_label.pack()
+
+current_answer = ask_question()
+
+app.mainloop()
