@@ -1,0 +1,50 @@
+# todo_list.py
+import tkinter as tk
+from tkinter import messagebox
+import sqlite3
+
+# Conexão com o banco de dados SQLite
+conn = sqlite3.connect('tasks.db')
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS tasks (task TEXT)")
+conn.commit()
+
+# Funções
+def add_task():
+    task = task_entry.get()
+    if task != "":
+        cursor.execute("INSERT INTO tasks VALUES (?)", (task,))
+        conn.commit()
+        listbox.insert(tk.END, task)
+        task_entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Warning", "Please enter a task.")
+
+def delete_task():
+    selected_task = listbox.curselection()
+    if selected_task:
+        task = listbox.get(selected_task)
+        cursor.execute("DELETE FROM tasks WHERE task = ?", (task,))
+        conn.commit()
+        listbox.delete(selected_task)
+
+# Interface Tkinter
+app = tk.Tk()
+app.title("To-Do List")
+
+task_entry = tk.Entry(app, width=50)
+task_entry.pack()
+
+add_button = tk.Button(app, text="Add Task", command=add_task)
+add_button.pack()
+
+delete_button = tk.Button(app, text="Delete Task", command=delete_task)
+delete_button.pack()
+
+listbox = tk.Listbox(app, width=50, height=10)
+listbox.pack()
+
+for task in cursor.execute("SELECT task FROM tasks"):
+    listbox.insert(tk.END, task[0])
+
+app.mainloop()
