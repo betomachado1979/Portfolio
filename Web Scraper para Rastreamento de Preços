@@ -1,0 +1,30 @@
+# price_tracker.py
+import requests
+from bs4 import BeautifulSoup
+import smtplib
+
+def check_price():
+    url = 'URL_DO_PRODUTO'
+    headers = {"User-Agent": "SEU_USER_AGENT"}
+
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Extraia o preço conforme o site
+    price = soup.find('span', {'class': 'price'}).get_text()
+    price_value = float(price.replace('$', '').replace(',', ''))
+
+    if price_value < 200:  # Defina o preço desejado
+        send_email()
+
+def send_email():
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('SEU_EMAIL', 'SUA_SENHA')
+    subject = 'Preço baixou!'
+    body = 'O preço do produto baixou. Confira o link: URL_DO_PRODUTO'
+    msg = f"Subject: {subject}\n\n{body}"
+    server.sendmail('DE_EMAIL', 'PARA_EMAIL', msg)
+    server.quit()
+
+check_price()
