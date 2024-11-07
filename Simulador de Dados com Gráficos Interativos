@@ -1,0 +1,19 @@
+# dice_simulator.py
+import random
+import matplotlib.pyplot as plt
+
+def roll_dice(num_rolls):
+    rolls = [random.randint(1, 6) for _ in range(num_rolls)]
+    return rolls
+
+def plot_results(rolls):
+    plt.hist(rolls, bins=range(1, 8), edgecolor='black', align='left')
+    plt.xlabel('Result')
+    plt.ylabel('Frequency')
+    plt.title('Dice Roll Simulation')
+    plt.xticks(range(1, 7))
+    plt.show()
+
+num_rolls = int(input("Enter the number of dice rolls: "))
+rolls = roll_dice(num_rolls)
+plot_results(rolls)
