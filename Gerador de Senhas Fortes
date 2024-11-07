@@ -1,0 +1,17 @@
+# password_generator.py
+import random
+import string
+
+def generate_password(length=12, use_special_chars=True):
+    characters = string.ascii_letters + string.digits
+    if use_special_chars:
+        characters += string.punctuation
+
+    password = ''.join(random.choice(characters) for _ in range(length))
+    return password
+
+length = int(input("Enter the length of the password: "))
+use_special_chars = input("Use special characters? (y/n): ").lower() == 'y'
+
+password = generate_password(length, use_special_chars)
+print("Generated password:", password)
