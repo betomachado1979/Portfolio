@@ -1,0 +1,19 @@
+# data_analysis.py
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Carregue um dataset (exemplo com Iris)
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+columns = ["sepal_length", "sepal_width", "petal_length", "petal_width", "species"]
+df = pd.read_csv(url, header=None, names=columns)
+
+# Análise simples
+print(df.describe())
+
+# Visualização de dados
+plt.figure(figsize=(10, 6))
+df['species'].value_counts().plot(kind='bar')
+plt.title("Distribuição das Espécies")
+plt.xlabel("Espécie")
+plt.ylabel("Contagem")
+plt.show()
