@@ -1,0 +1,49 @@
+-- Criação das tabelas
+CREATE TABLE Clientes (
+    ClienteID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Email VARCHAR(100),
+    Genero CHAR(1),
+    Idade INT,
+    Pais VARCHAR(50)
+);
+
+CREATE TABLE Produtos (
+    ProdutoID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Categoria VARCHAR(50),
+    Preco DECIMAL(10, 2)
+);
+
+CREATE TABLE Vendas (
+    VendaID INT PRIMARY KEY,
+    ClienteID INT,
+    ProdutoID INT,
+    Data DATE,
+    Quantidade INT,
+    Total DECIMAL(10, 2),
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
+    FOREIGN KEY (ProdutoID) REFERENCES Produtos(ProdutoID)
+);
+
+-- Inserindo dados
+INSERT INTO Clientes VALUES (1, 'João Silva', 'joao@example.com', 'M', 30, 'Brasil');
+INSERT INTO Produtos VALUES (1, 'Notebook', 'Eletrônicos', 2500.00);
+INSERT INTO Vendas VALUES (1, 1, 1, '2023-01-15', 1, 2500.00);
+
+-- Consultas
+-- Total de vendas por produto
+SELECT ProdutoID, SUM(Quantidade) AS TotalVendas
+FROM Vendas
+GROUP BY ProdutoID;
+
+-- Média de valor gasto por cliente
+SELECT ClienteID, AVG(Total) AS MediaGasto
+FROM Vendas
+GROUP BY ClienteID;
+
+-- Produtos mais vendidos
+SELECT ProdutoID, SUM(Quantidade) AS TotalVendas
+FROM Vendas
+GROUP BY ProdutoID
+ORDER BY TotalVendas DESC;
