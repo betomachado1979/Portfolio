@@ -1,0 +1,43 @@
+-- Criação das tabelas
+CREATE TABLE Clientes (
+    ClienteID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Documento VARCHAR(20),
+    Email VARCHAR(100),
+    Telefone VARCHAR(15)
+);
+
+CREATE TABLE Quartos (
+    QuartoID INT PRIMARY KEY,
+    Tipo VARCHAR(50),
+    Capacidade INT,
+    Disponibilidade BOOLEAN
+);
+
+CREATE TABLE Reservas (
+    ReservaID INT PRIMARY KEY,
+    ClienteID INT,
+    QuartoID INT,
+    DataCheckIn DATE,
+    DataCheckOut DATE,
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
+    FOREIGN KEY (QuartoID) REFERENCES Quartos(QuartoID)
+);
+
+-- Inserindo dados
+INSERT INTO Clientes VALUES (1, 'Beatriz Costa', '123456789', 'beatriz@example.com', '11987654321');
+INSERT INTO Quartos VALUES (101, 'Suite', 2, TRUE);
+INSERT INTO Reservas VALUES (1, 1, 101, '2023-05-20', '2023-05-22');
+
+-- Consultas
+-- Ocupação e receita por tipo de quarto
+SELECT Tipo, COUNT(*) AS TotalReservas, SUM(DATEDIFF(DataCheckOut, DataCheckIn)) AS NoitesOcupadas
+FROM Reservas
+JOIN Quartos ON Reservas.QuartoID = Quartos.QuartoID
+GROUP BY Tipo;
+
+-- Cancelamentos
+SELECT ClienteID, COUNT(*) AS TotalCancelamentos
+FROM Reservas
+WHERE DataCheckOut IS NULL
+GROUP BY ClienteID;
