@@ -1,0 +1,39 @@
+-- Criação das tabelas
+CREATE TABLE Clientes (
+    ClienteID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Idade INT,
+    Genero CHAR(1),
+    Localidade VARCHAR(50)
+);
+
+CREATE TABLE Perguntas (
+    PerguntaID INT PRIMARY KEY,
+    TextoPergunta VARCHAR(200)
+);
+
+CREATE TABLE Respostas (
+    RespostaID INT PRIMARY KEY,
+    ClienteID INT,
+    PerguntaID INT,
+    Resposta INT,
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
+    FOREIGN KEY (PerguntaID) REFERENCES Perguntas(PerguntaID)
+);
+
+-- Inserindo dados
+INSERT INTO Clientes VALUES (1, 'Carlos Santos', 28, 'M', 'São Paulo');
+INSERT INTO Perguntas VALUES (1, 'Qual a sua satisfação com o produto?');
+INSERT INTO Respostas VALUES (1, 1, 1, 4);
+
+-- Consultas
+-- Média de satisfação por pergunta
+SELECT PerguntaID, AVG(Resposta) AS MediaSatisfacao
+FROM Respostas
+GROUP BY PerguntaID;
+
+-- Satisfação por localidade
+SELECT Localidade, AVG(Resposta) AS MediaSatisfacao
+FROM Respostas
+JOIN Clientes ON Respostas.ClienteID = Clientes.ClienteID
+GROUP BY Localidade;
