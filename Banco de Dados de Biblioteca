@@ -1,0 +1,43 @@
+-- Criação das tabelas
+CREATE TABLE Livros (
+    LivroID INT PRIMARY KEY,
+    Titulo VARCHAR(100),
+    Autor VARCHAR(100),
+    Genero VARCHAR(50),
+    AnoPublicacao INT
+);
+
+CREATE TABLE Leitores (
+    LeitorID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Idade INT,
+    Email VARCHAR(100)
+);
+
+CREATE TABLE Emprestimos (
+    EmprestimoID INT PRIMARY KEY,
+    LivroID INT,
+    LeitorID INT,
+    DataEmprestimo DATE,
+    DataDevolucao DATE,
+    FOREIGN KEY (LivroID) REFERENCES Livros(LivroID),
+    FOREIGN KEY (LeitorID) REFERENCES Leitores(LeitorID)
+);
+
+-- Inserindo dados
+INSERT INTO Livros VALUES (1, '1984', 'George Orwell', 'Ficção', 1949);
+INSERT INTO Leitores VALUES (1, 'Maria Oliveira', 25, 'maria@example.com');
+INSERT INTO Emprestimos VALUES (1, 1, 1, '2023-03-10', NULL);
+
+-- Consultas
+-- Contar livros emprestados por gênero
+SELECT Genero, COUNT(*) AS TotalEmprestimos
+FROM Emprestimos
+JOIN Livros ON Emprestimos.LivroID = Livros.LivroID
+GROUP BY Genero;
+
+-- Identificar leitores com histórico de atraso
+SELECT LeitorID, COUNT(*) AS EmprestimosAtrasados
+FROM Emprestimos
+WHERE DataDevolucao IS NULL AND DataEmprestimo < DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+GROUP BY LeitorID;
