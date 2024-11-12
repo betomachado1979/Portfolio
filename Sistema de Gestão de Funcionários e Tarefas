@@ -1,0 +1,41 @@
+-- Criação das tabelas
+CREATE TABLE Funcionarios (
+    FuncionarioID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Cargo VARCHAR(50),
+    Departamento VARCHAR(50)
+);
+
+CREATE TABLE Tarefas (
+    TarefaID INT PRIMARY KEY,
+    Descricao VARCHAR(200),
+    Status VARCHAR(20),
+    DataInicio DATE,
+    DataFim DATE,
+    FuncionarioID INT,
+    FOREIGN KEY (FuncionarioID) REFERENCES Funcionarios(FuncionarioID)
+);
+
+CREATE TABLE Projetos (
+    ProjetoID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Departamento VARCHAR(50)
+);
+
+-- Inserindo dados
+INSERT INTO Funcionarios VALUES (1, 'Ana Souza', 'Desenvolvedora', 'TI');
+INSERT INTO Tarefas VALUES (1, 'Desenvolver API', 'Em andamento', '2023-04-01', NULL, 1);
+
+-- Consultas
+-- Tempo médio de execução das tarefas
+SELECT FuncionarioID, AVG(DATEDIFF(DataFim, DataInicio)) AS TempoMedioExecucao
+FROM Tarefas
+WHERE DataFim IS NOT NULL
+GROUP BY FuncionarioID;
+
+-- Tarefas pendentes por projeto
+SELECT ProjetoID, COUNT(*) AS TarefasPendentes
+FROM Tarefas
+JOIN Projetos ON Tarefas.Departamento = Projetos.Departamento
+WHERE Status = 'Em andamento'
+GROUP BY ProjetoID;
